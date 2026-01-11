@@ -28,4 +28,3 @@ class SportsDBClient:
         response = requests.get(url, params={"p": player_name}, timeout=20)
         response.raise_for_status()
         return response.json()
-    
