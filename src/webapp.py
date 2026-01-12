@@ -8,3 +8,57 @@ client = SportsDBClient()
 def home():
     return render_template('index.html')
 
+@app.route("/search") #('/search', methods=['GET'])
+def search():
+    query = request.args.get("q","").strip()
+    mode = request.args.get("mode","player") # 'player' or 'team'
+
+    if not query:
+        return render_template("results.html", error="Please enter a name.")
+    
+    try:
+        if mode == "team":
+            data = client.search_team(query)
+            items = data.get("teams") # teams endpoint uses "teams"
+            if not items:
+                return render_template("results.html", error="No teams found.")
+            teams = items[0]
+            return render_template("results.html", 
+                                   mode = "team",
+                                   name = teams.get("strTeam"),
+                                   subtitle = teams.get("strLeague"),
+                                   image_url = teams.get("strBadge"),
+                                   extra = {
+                                       "Sport" : teams.get("strSport"),
+                                       "Country": teams.get("strCountry"),
+                                       "Stadium": teams.get("strStadium"),
+                                       "Description": teams.get("strDescriptionEN"),
+                                       "Banner": teams.get("strBanner"),
+                                       "Fanart1": teams.get("strFanart1")
+                                   },)
+        #PLAYER_MODE
+        data = client.search_player(query)
+        players = data.get("player")
+        if not players:
+            return render_template("results.html", error= "No players found.")
+        players = players[0]
+        return render_template("results.html", 
+                               mode = "player",
+                               name = players.get("strPlayer"),
+                               team = players.get("strTeam"),
+                               sport = players.get("strSport"),
+                               extra = {
+                                   "Thumb": players.get("strThumb"),
+                                   "Cutout" : players.get("strCutout"),
+                                   "Nationality" : players.get("strNationality"),
+                                   "Position" : players.get("strPosition"),
+                                   "Born" : players.get("dateBorn"),
+                                   "Gender" : players.get("strGender")
+                               },)
+    except Exception as e:
+        return render_template("results.html", error=f"Error: {e}")
+    
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
