@@ -40,10 +40,27 @@
           <h3>Details</h3>
           <ul>
             {% for k, v in extra.items() %}
-              <li><b>{{ k }}:</b> {{ v }}</li>
+              <li>
+                <b>{{ k }}:</b>
+              {% if v and (v.endswith(".png") or v.endswith(".jpg") or v.endswith(".jpeg")) %}
+                <br />
+                <img src="{{ v }}" alt="{{ k }}" />
+              {% else %}
+                {{ v }}
+                {% endif %}
+              </li>
             {% endfor %}
           </ul>
         </div>
+
+        <!-- <div class="card">
+          <h3>Details</h3>
+          <ul>
+            {% for k, v in extra.items() %}
+              <li><b>{{ k }}:</b> {{ v }}</li>
+            {% endfor %}
+          </ul>
+        </div> -->
       </div>
     {% endif %}
   </body>

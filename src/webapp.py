@@ -38,22 +38,22 @@ def search():
                                    },)
         #PLAYER_MODE
         data = client.search_player(query)
-        players = data.get("player")
-        if not players:
+        p_items = data.get("player")
+        if not p_items:
             return render_template("results.html", error= "No players found.")
-        players = players[0]
+        players = p_items[0]
         return render_template("results.html", 
                                mode = "player",
                                name = players.get("strPlayer"),
-                               team = players.get("strTeam"),
-                               sport = players.get("strSport"),
+                               subtitle = players.get("strTeam"),
+                               image_url = players.get("strThumb"),
                                extra = {
-                                   "Thumb": players.get("strThumb"),
-                                   "Cutout" : players.get("strCutout"),
+                                   "Sport" : players.get("strSport"),
                                    "Nationality" : players.get("strNationality"),
                                    "Position" : players.get("strPosition"),
                                    "Born" : players.get("dateBorn"),
-                                   "Gender" : players.get("strGender")
+                                   "Gender" : players.get("strGender"),
+                                   "Cutout" : players.get("strCutout"),
                                },)
     except Exception as e:
         return render_template("results.html", error=f"Error: {e}")
